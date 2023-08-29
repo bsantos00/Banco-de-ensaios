@@ -16,7 +16,7 @@ struct calib{
   float cmin;
 };
 
-float volt_adc_max = 6.144; // valor retirado da documentação do github
+float volt_adc_max = 6.144; //Valor retirado da documentação do github
 int int_adc_max = 32767; //16 bits signed
 calib calib_q;
 calib calib_pa;
@@ -36,7 +36,7 @@ int iQ, iP,iR; //índice dos arrays
 float Qout,PAout,PCout, Rpmout;
 long ti,tf;
 int DT = 100,rpm =0;
-int Enviar = 7;
+int Enviar = 12;
 
 void INTERRUPT()
 {
@@ -109,15 +109,12 @@ void loop() {
   if (millis()-tf>500){rpm=0;}
   
   delay(DT);
-  //Serial.println("L1");
-  
-  //Serial.println("L2");
+
   
   adc0 = ads.readADC_SingleEnded(0);if (adc0<0){adc0=0;}
   adc1 = ads.readADC_SingleEnded(1);if (adc1<0){adc1=0;};
   adc2 = ads.readADC_SingleEnded(2);if (adc2<0){adc2=0;}
-  
-  //Serial.println("L2.5");
+
 
   Q = mapfloat(adc0,0,calib_q.cmax,0,300);//Serial.print(adc0);Serial.print("| ");//l/m
   if (Q<5){Q=0;} 
@@ -136,55 +133,48 @@ void loop() {
   PCout = media(APc,numP);
   Rpmout = media(Arpm,numR);
 
-  //Serial.println("L4");
+
 
   
   //Output
-  if (true){
-    Serial.print(Qout);Serial.print(" ");
-    Serial.print(PAout);Serial.print(" ");
-    Serial.print(PCout);Serial.print(" ");
-    Serial.print(rpm);Serial.println(" ");
+  if (digitalRead(Enviar) == HIGH){
+    Serial.print("Caudal: ");Serial.print(Qout);Serial.println(" l/min");
+    Serial.print("Pasp: ");Serial.print(PAout);Serial.println(" mca");
+    Serial.print("Pcomp: ");Serial.print(PCout);Serial.println(" mca");
+    Serial.print("RPM: ");Serial.print(rpm);Serial.println(" rpm");
+    Serial.println("----------------------------");
   }
-  /*Serial.print("Q: "); Serial.println(Qout);
-  Serial.print("PAsp: "); Serial.println(PAout);
-  Serial.print("Pcomp: "); Serial.println(PCout);
-  Serial.print("RPM");Serial.println(Rpmout);
- 
-  Serial.println("inicio");
-  Serial.println(adc0);Serial.println(adc1);Serial.println(adc2);*/
 
   lcd.setCursor(0,0);
   lcd.print("Q:");
-  lcd.setCursor(4, 0);
+  lcd.setCursor(5, 0);
   lcd.print(Qout);
   lcd.print("   ");
-  lcd.setCursor(11,0);
+  lcd.setCursor(12,0);
   lcd.print ("L/min");
 
   lcd.setCursor(0,1);
   lcd.print("PA:");
-  lcd.setCursor(4, 1);
+  lcd.setCursor(5, 1);
   lcd.print(PAout);
   lcd.print("   ");
-  lcd.setCursor(11,1);
+  lcd.setCursor(12,1);
   lcd.print ("mca"); 
 
   lcd.setCursor(0,2);
   lcd.print("PC:");
-  lcd.setCursor(4, 2);
+  lcd.setCursor(5, 2);
   lcd.print(PCout);
   lcd.print("  ");
-  lcd.setCursor(10,2);
-  lcd.print (" mca");
+  lcd.setCursor(12,2);
+  lcd.print ("mca");
 
   lcd.setCursor(0,3);
   lcd.print("RPM:");
-  lcd.setCursor(4,3); 
+  lcd.setCursor(5,3); 
   lcd.print(Rpmout);
   lcd.print("     ");
-  lcd.setCursor(10,3);
-  lcd.print(" ");
+  lcd.setCursor(12,3);
   lcd.print ("RPM");
 
 }
