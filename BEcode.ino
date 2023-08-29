@@ -7,7 +7,7 @@
 #define ende  0x27 // Serve para definir o endereço do display.
 
 LiquidCrystal_I2C lcd(ende,col,lin); // Chamada da funcação LiquidCrystal para ser usada com o I2C
-char URL[] = "";
+char URL[] = "bit.ly/BEcode";
 /*
 Para este código, conectar:
   Halleffect a porta digital 2
@@ -78,7 +78,7 @@ void setup() {
   lcd.print("Bernardo Santos");
   lcd.setCursor(7,3);
   lcd.print("em 2023");
-  delay(5000);
+  delay(1500);
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Baseado no trabalho");
@@ -88,12 +88,13 @@ void setup() {
   lcd.print("Tiago Barreto");
   lcd.setCursor(7,3);
   lcd.print("em 2017");
-  delay(5000);
+  delay(1500);
   lcd.clear();
-  lcd.setCursor(0,1);
-  lcd.print("codigo disponivel em:")
-  lcd.setCursor(0,2);
+  lcd.setCursor(4,1);
+  lcd.print("Codigo em:");
+  lcd.setCursor(3,2);
   lcd.print(URL);
+  delay(2000);
   lcd.clear();
   
   ti = millis();
