@@ -8,13 +8,7 @@
 
 LiquidCrystal_I2C lcd(ende,col,lin); // Chamada da funcação LiquidCrystal para ser usada com o I2C
 char URL[] = "bit.ly/BEcode";
-/*
-Para este código, conectar:
-  Halleffect a porta digital 2
-  Caudal a adc0
-  Pasp a adc1
-  Pcomp a adc2
-*/
+
 
 // calibração dos transdutores (funções no fim do código)
 struct calib{ 
@@ -22,7 +16,7 @@ struct calib{
   float cmin;
 };
 
-float volt_adc_max = 6.144; //documentação do github
+float volt_adc_max = 6.144; // valor retirado da documentação do github
 int int_adc_max = 32767; //16 bits signed
 calib calib_q;
 calib calib_pa;
