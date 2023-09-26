@@ -94,7 +94,7 @@ void setup() {
   ti = millis();
   pinMode(Enviar, INPUT);
   pinMode(2,INPUT_PULLUP);
-  calib_q = calibrar_caudal(10000,10000); //resistências do divisor de tensão em cada transdutor (R1,R2) em ohms
+  calib_q = calibrar_caudal(10000,10000); //resistências do divisor de tensão (R3,R4) em ohms
   calib_pa = calibrar_pressao(300);
   calib_pc = calibrar_pressao(300);
 
@@ -119,7 +119,7 @@ void loop() {
   Q = mapfloat(adc0,0,calib_q.cmax,0,300);//Serial.print(adc0);Serial.print("| ");//l/m
   if (Q<5){Q=0;} 
   Pasp = mapfloat(adc1,calib_pa.cmin,calib_pa.cmax,-10,90); //Serial.print(adc1);Serial.print("| "); //mca
-  Pcomp = mapfloat(adc2,calib_pc.cmin,calib_pc.cmax,-10,90);//Serial.print(adc2);Serial.println("| ");// 7040 refere-se ao corte por limite de corrente
+  Pcomp = mapfloat(adc2,calib_pc.cmin,calib_pc.cmax,-10,90);//Serial.print(adc2);Serial.println("| ");
 
   
   AQ[iQ]=Q; APa[iP]=Pasp; APc[iP]=Pcomp;Arpm[iR]=rpm;
