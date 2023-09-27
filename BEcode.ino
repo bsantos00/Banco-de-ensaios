@@ -1,3 +1,5 @@
+//Código disponivél em bit.ly/BEcode
+
 #include <Adafruit_ADS1X15.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
@@ -6,7 +8,7 @@
 #define lin  4 // Serve para definir o numero de linhas do display utilizado
 #define ende  0x27 // Serve para definir o endereço do display.
 
-LiquidCrystal_I2C lcd(ende,col,lin); // Chamada da funcação LiquidCrystal para ser usada com o I2C
+LiquidCrystal_I2C lcd(ende,col,lin); 
 char URL[] = "bit.ly/BEcode";
 
 
@@ -40,12 +42,11 @@ int Enviar = 12;
 
 void INTERRUPT()
 {
-  tf=millis();
-  if (tf-ti>1000/60){
-  rpm=60000./(tf-ti);
+  tf=micros();
+  if (tf-ti>1000000/60){
+  rpm=60000000./(tf-ti);
   ti=tf;
   }
-  //Serial.println(rpm);
 }
 
 float media(float A[], int num)
@@ -101,7 +102,6 @@ void setup() {
 
   attachInterrupt(digitalPinToInterrupt(2), INTERRUPT, FALLING);
   }
-  //Serial.println("Setup Concluído");
 
 
 
@@ -110,16 +110,17 @@ void loop() {
   
   delay(DT);
 
-  
+// Lê o ADC
+
   adc0 = ads.readADC_SingleEnded(0);if (adc0<0){adc0=0;}
   adc1 = ads.readADC_SingleEnded(1);if (adc1<0){adc1=0;};
   adc2 = ads.readADC_SingleEnded(2);if (adc2<0){adc2=0;}
 
 
-  Q = mapfloat(adc0,0,calib_q.cmax,0,300);//Serial.print(adc0);Serial.print("| ");//l/m
+  Q = mapfloat(adc0,0,calib_q.cmax,0,300);// l/min
   if (Q<5){Q=0;} 
-  Pasp = mapfloat(adc1,calib_pa.cmin,calib_pa.cmax,-10,90); //Serial.print(adc1);Serial.print("| "); //mca
-  Pcomp = mapfloat(adc2,calib_pc.cmin,calib_pc.cmax,-10,90);//Serial.print(adc2);Serial.println("| ");
+  Pasp = mapfloat(adc1,calib_pa.cmin,calib_pa.cmax,-10,90); // mca
+  Pcomp = mapfloat(adc2,calib_pc.cmin,calib_pc.cmax,-10,90);// mca
 
   
   AQ[iQ]=Q; APa[iP]=Pasp; APc[iP]=Pcomp;Arpm[iR]=rpm;
@@ -138,11 +139,19 @@ void loop() {
   
   //Output
   if (digitalRead(Enviar) == HIGH){
+
+    
     Serial.print("Caudal: ");Serial.print(Qout);Serial.println(" l/min");
     Serial.print("Pasp: ");Serial.print(PAout);Serial.println(" mca");
     Serial.print("Pcomp: ");Serial.print(PCout);Serial.println(" mca");
     Serial.print("RPM: ");Serial.print(rpm);Serial.println(" rpm");
     Serial.println("----------------------------");
+    
+    /*Serial.print(Qout);Serial.print(" ");
+    Serial.print(PAout);Serial.print(" ");
+    Serial.print(PCout);Serial.print(" ");
+    Serial.print(rpm);Serial.println(" ");
+    */
   }
 
   lcd.setCursor(0,0);
@@ -172,7 +181,7 @@ void loop() {
   lcd.setCursor(0,3);
   lcd.print("RPM:");
   lcd.setCursor(5,3); 
-  lcd.print(Rpmout);
+  lcd.print(rpm);
   lcd.print("     ");
   lcd.setCursor(12,3);
   lcd.print ("RPM");
@@ -197,8 +206,8 @@ struct calib calibrar_caudal(float div_tensao1, float div_tensao2){
 struct calib calibrar_pressao(float R_P) {
   
   calib ins;
-  ins.cmax = ajustar_ao_adc(0.02*R_P);
-  ins.cmin = ajustar_ao_adc(0.004*R_P);
+  ins.cmax = ajustar_ao_adc(0.02*R_P);  //20mA * Resistencia
+  ins.cmin = ajustar_ao_adc(0.004*R_P); //4mA * Resistência
   
   return  ins;
 }
